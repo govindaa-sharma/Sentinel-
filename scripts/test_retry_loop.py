@@ -15,4 +15,4 @@ result = sentinel_graph.invoke({
 print("Retry count:", result["retry_count"])
 print("Terminal state:", result.get("terminal_state"))
 print("Verification passed:", result["verification_passed"])
-print("Final execution result:", result.get("execution_result"))
+print("Final execution result is:", result.get("execution_result"))
