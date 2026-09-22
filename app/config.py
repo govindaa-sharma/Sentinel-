@@ -4,6 +4,7 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     database_url: str
+    sandbox_mode: str = "docker"
     reader_database_url: str
     writer_database_url: str
     google_api_key: str
