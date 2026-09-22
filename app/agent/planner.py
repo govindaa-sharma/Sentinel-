@@ -4,7 +4,9 @@ from app.agent.state import AgentState
 
 settings = get_settings()
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=settings.google_api_key, temperature=0)
+# llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=settings.google_api_key, temperature=0)
+from app.agent.llm import get_llm
+llm = get_llm()
 
 PLANNER_SYSTEM_PROMPT = """You are a planning assistant for a database agent.
 Given a user's request, restate it as a single, clear, database-actionable instruction.

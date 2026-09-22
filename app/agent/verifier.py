@@ -11,11 +11,13 @@ class SanityCheck(BaseModel):
     reason: str
 
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    google_api_key=settings.google_api_key,
-    temperature=0,
-).with_structured_output(SanityCheck)
+# llm = ChatGoogleGenerativeAI(
+#     model="gemini-2.5-flash",
+#     google_api_key=settings.google_api_key,
+#     temperature=0,
+# ).with_structured_output(SanityCheck)
+from app.agent.llm import get_llm
+llm = get_llm(structured_output_schema=SanityCheck)
 
 SANITY_PROMPT = """You are reviewing whether a database query result plausibly answers the user's request.
 You are NOT checking SQL syntax — only whether the result looks like a sane answer to the question.

@@ -27,12 +27,13 @@ Rules:
 - month values look like '2026-08'.
 """
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    google_api_key=settings.google_api_key,
-    temperature=0,
-).with_structured_output(GeneratedQuery)
-
+# llm = ChatGoogleGenerativeAI(
+#     model="gemini-2.5-flash",
+#     google_api_key=settings.google_api_key,
+#     temperature=0,
+# ).with_structured_output(GeneratedQuery)
+from app.agent.llm import get_llm
+llm = get_llm(structured_output_schema=GeneratedQuery)
 
 def codegen_node(state: AgentState) -> dict:
     instruction = state["user_request"]

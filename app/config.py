@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     reader_database_url: str
     writer_database_url: str
     google_api_key: str
+    llm_provider: str
+    ollama_model: str
     jwt_secret: str
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
