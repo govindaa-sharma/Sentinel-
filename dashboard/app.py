@@ -1,7 +1,8 @@
 import streamlit as st
 import requests
 
-API_URL = "http://localhost:8000"  # we'll change this to the deployed URL later
+import os
+API_URL = os.environ.get("API_URL", "http://localhost:8000")  # we'll change this to the deployed URL later
 
 st.set_page_config(page_title="Sentinel", layout="wide")
 
