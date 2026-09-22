@@ -2,8 +2,8 @@ import streamlit as st
 import requests
 
 import os
-API_URL = os.environ.get("API_URL", "http://localhost:8000")  # we'll change this to the deployed URL later
-
+# API_URL = os.environ.get("API_URL", "http://localhost:8000")  # we'll change this to the deployed URL later
+API_URL = st.secrets.get("API_URL", os.environ.get("API_URL", "http://localhost:8000"))
 st.set_page_config(page_title="Sentinel", layout="wide")
 
 if "token" not in st.session_state:
