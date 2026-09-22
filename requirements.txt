@@ -14,3 +14,4 @@ logfire
 python-dotenv
 streamlit
 requests
+bcrypt==4.0.1
