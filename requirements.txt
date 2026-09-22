@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+langgraph
+langchain-google-genai
+langchain-ollama
+pydantic
+pydantic-settings
+sqlalchemy
+psycopg2-binary
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+logfire
+python-dotenv
+streamlit
+requests
