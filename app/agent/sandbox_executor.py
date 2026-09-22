@@ -21,9 +21,9 @@ def run_sandboxed_query(sql: str, risk_tier: str) -> dict:
     """
     db_url = settings.writer_database_url if risk_tier == "HIGH" else settings.reader_database_url
 
-    if settings.sandbox_mode == "direct":
-        return _run_direct(sql, db_url)
-    return _run_docker(sql, db_url)
+    if settings.sandbox_mode == "docker":
+        return _run_docker(sql, db_url)
+    return _run_direct(sql, db_url)
 
 
 def _run_docker(sql: str, db_url: str) -> dict:
