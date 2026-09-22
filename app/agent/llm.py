@@ -10,7 +10,7 @@ def get_llm(structured_output_schema=None):
         llm = ChatOllama(model=settings.ollama_model, temperature=0)
     else:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             google_api_key=settings.google_api_key,
             temperature=0,
         )
