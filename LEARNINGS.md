@@ -103,3 +103,24 @@ grounded in that benchmark's actual numbers, not assumed in advance.
 **Short title of the decision/bug/limitation.**
 What happened, what we assumed vs. what was actually true, how it was caught, what we did about it.
 ```
+
+**Approval gate: separating "propose" from "execute" into different code paths.**
+The agent graph never calls the sandbox executor for HIGH-risk actions — the Approval Gate node
+only writes a `PendingApproval` audit record and the graph run ends there. Execution only happens
+later, from a completely separate code path (`/approvals/{id}/approve`), triggered by a human.
+This means the write DB credential is reachable from exactly one function call in the entire
+codebase, gated behind both a role check and a self-approval check — not a matter of the LLM
+"choosing" to behave safely, but the write capability being structurally unreachable any other way.
+
+**Authorization checks must run before the irreversible action, never after.**
+In the approve endpoint, the self-approval check (`requester_id == current_user.id`) and the
+already-resolved check both run *before* `run_sandboxed_query` is ever called — not after, and not
+as cleanup. Proven directly: attempted self-approval on my own request → correctly rejected with
+403, before any query ran. Attempted to approve an already-resolved request → correctly rejected
+with 400. Both failure paths were deliberately tested, not just assumed to work from reading the code.
+
+**Re-fetching state fresh from the DB inside each endpoint, not trusting request-time assumptions.**
+Both approve/reject re-query `PendingApproval` and check `status == pending` right before acting,
+rather than trusting any earlier read. This guards against (though doesn't fully solve) a race
+condition where two approvers act on the same request near-simultaneously. Full protection would
+need a DB-level lock or unique constraint — noted as an honest limitation, not claimed as solved.

@@ -6,7 +6,7 @@ from app.agent.risk_classifier import risk_classifier_node
 from app.agent.sandbox_executor import run_sandboxed_query
 from app.agent.verifier import verifier_node
 from app.agent.critic import critic_node
-
+from app.agent.approval_gate import approval_gate_node
 
 def sandbox_executor_node(state: AgentState) -> dict:
     result = run_sandboxed_query(state["query_plan"]["sql"], state["risk_tier"])
@@ -39,19 +39,20 @@ def build_graph():
     graph.add_node("verifier", verifier_node)
     graph.add_node("critic", critic_node)
     graph.add_node("mark_success", mark_success)
+    graph.add_node("approval_gate", approval_gate_node)
 
     graph.set_entry_point("planner")
     graph.add_edge("planner", "codegen")
     graph.add_edge("codegen", "risk_classifier")
 
-    graph.add_conditional_edges(
-        "risk_classifier",
-        route_by_risk,
-        {
-            "execute": "execute",
-            "approval_pending": END,  # still temporary — Week 3 builds the real approval gate
-        },
-    )
+    # graph.add_conditional_edges(
+    #     "risk_classifier",
+    #     route_by_risk,
+    #     {
+    #         "execute": "execute",
+    #         "approval_pending": END,  # still temporary — Week 3 builds the real approval gate
+    #     },
+    # )
 
     graph.add_edge("execute", "verifier")
 
@@ -74,6 +75,17 @@ def build_graph():
     )
 
     graph.add_edge("mark_success", END)
+
+    graph.add_conditional_edges(
+        "risk_classifier",
+        route_by_risk,
+        {
+            "execute": "execute",
+            "approval_pending": "approval_gate",
+        },
+    )
+
+    graph.add_edge("approval_gate", END)
 
     return graph.compile()
 

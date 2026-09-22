@@ -48,3 +48,27 @@ class RiskReport(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     client = relationship("Client", back_populates="risk_reports")
+
+class ApprovalStatus(str, enum.Enum):
+    pending = "pending"
+    approved = "approved"
+    rejected = "rejected"
+
+
+class PendingApproval(Base):
+    __tablename__ = "pending_approvals"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    requester_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    approver_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)  # filled in once resolved
+
+    sql = Column(String, nullable=False)
+    operation = Column(String, nullable=False)
+    tables = Column(String, nullable=False)  # comma-separated, kept simple for now
+    user_request = Column(String, nullable=False)  # original natural-language ask, for context in the UI
+
+    status = Column(Enum(ApprovalStatus), nullable=False, default=ApprovalStatus.pending)
+    rejection_reason = Column(String, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    resolved_at = Column(DateTime, nullable=True)
